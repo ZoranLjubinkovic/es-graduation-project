@@ -106,7 +106,7 @@ public class ExercisesIntegrationTest extends BaseTest {
     // TASK 5: Add a new parameter "considerItemCountInSorting" to the request that change sorting (when it's true)
     // from: _score DESC, rank DESC, _id DESC
     // to: _score DESC, itemCount DESC, _id DESC
-    @Ignore
+//    @Ignore
     @Test
     public void testSortingByItemCountWorks() {
 
