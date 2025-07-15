@@ -87,7 +87,7 @@ public class ExercisesIntegrationTest extends BaseTest {
     }
 
     // TASK 4: Change facet bucket definition so that the small bucket contain count > 0
-    @Ignore
+//    @Ignore
     @Test
     public void testSearchByTextReturnsMoreThan0InSmallFacetBucket() {
         client
