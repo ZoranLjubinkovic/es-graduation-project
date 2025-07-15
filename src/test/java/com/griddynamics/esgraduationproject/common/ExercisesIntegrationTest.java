@@ -42,7 +42,7 @@ public class ExercisesIntegrationTest extends BaseTest {
     }
 
     // TASK 2: Fix bulk data file
-    @Ignore
+//    @Ignore
     @Test
     public void testGetAllReturns36documents() {
         client

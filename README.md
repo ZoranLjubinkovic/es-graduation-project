@@ -12,24 +12,28 @@ Elasticsearch capstone project from  GridU course ['Software engineer to Search 
 ## Quick Start
 
 ```shell
- docker compose -f elasticsearch-kibana-compose.yaml up
+  docker compose -f elasticsearch-kibana-compose.yaml up
 ```
 
 > Open [Kibana](http://localhost:5601/)
 > 
 > Check [Elasticsearch](http://localhost:9200/)
 
+### Run tests
+```shell
+  mvn clean test
+```
+
 ### Build the project
 ```shell
- mvn clean package
+  mvn clean package
 ```
 
 ### Run app (with indexing)
-
 ```shell
- java -jar target/es-graduation-project-1.0.jar recreateIndex
+  java -jar target/es-graduation-project-1.0.jar recreateIndex
 ```
 or
 ```shell
- mvn spring-boot:run -Dspring-boot.run.arguments="recreateIndex"
+  mvn spring-boot:run -Dspring-boot.run.arguments="recreateIndex"
 ```
