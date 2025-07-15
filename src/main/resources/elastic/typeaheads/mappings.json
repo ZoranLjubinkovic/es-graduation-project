@@ -2,7 +2,7 @@
   "properties": {
     "name": {
       "type": "text",
-      "analyzer": "text_default",
+      "analyzer": "txt_default",
       "index_options": "docs",
       "norms": false
     },

@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -12,6 +13,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+@ActiveProfiles("test")
 public class ExercisesIntegrationTest extends BaseTest {
 
     private APIClient client = new APIClient();
@@ -26,7 +28,7 @@ public class ExercisesIntegrationTest extends BaseTest {
     }
 
     // TASK 1: Fix 2 bugs in config and recreation/filling of the index.
-    @Ignore
+//    @Ignore
     @Test
     public void testGetAllWorks() {
         client

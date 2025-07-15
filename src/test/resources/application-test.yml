@@ -1,0 +1,10 @@
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    org.springframework.boot: WARN
+    org.springframework.test: WARN
+    org.springframework.boot.test: WARN
+    org.elasticsearch.client.RestClient: WARN # TRACE # Or DEBUG, INFO, WARN, ERROR
+    org.elasticsearch.client: WARN # TRACE # Or DEBUG, INFO, WARN, ERROR
+    org.apache.http.wire: WARN # DEBUG # Or DEBUG, INFO, WARN, ERROR
