@@ -14,6 +14,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -323,6 +324,9 @@ public class TypeaheadRepositoryImpl implements TypeaheadRepository {
         int requestCnt = 0;
         try {
             BulkRequest bulkRequest = new BulkRequest();
+            bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
+//            bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL); // test passes with this, too
+//            bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.NONE); // this is default;
             BufferedReader br = new BufferedReader(new InputStreamReader(bulkInsertDataFile.getInputStream()));
 
             while (br.ready()) {
