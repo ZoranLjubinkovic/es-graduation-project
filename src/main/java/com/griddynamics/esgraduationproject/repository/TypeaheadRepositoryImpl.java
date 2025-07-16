@@ -8,6 +8,7 @@ import com.griddynamics.esgraduationproject.model.TypeaheadServiceRequest;
 import com.griddynamics.esgraduationproject.model.TypeaheadServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -21,6 +22,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.client.indices.GetIndexResponse;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.DisMaxQueryBuilder;
@@ -46,8 +48,11 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -255,15 +260,101 @@ public class TypeaheadRepositoryImpl implements TypeaheadRepository {
 
     @Override
     public void recreateIndex() {
-        if (indexExists(indexName)) {
-            deleteIndex(indexName);
-        }
+        String indexNameWithUnderscoreAndDateFormatted =
+                indexName + "_" +
+                        LocalDateTime.now()
+                                .format(formatter);
+        log.info("New name for index, indexNameWithUnderscoreAndDateFormatted: {}",
+                indexNameWithUnderscoreAndDateFormatted
+        );
 
         String settings = getStrFromResource(typeaheadsSettingsFile);
         String mappings = getStrFromResource(typeaheadsMappingsFile);
-        createIndex(indexName, settings, mappings);
+
+        createIndex(indexNameWithUnderscoreAndDateFormatted, settings, mappings);
+
+        boolean fixIndicesAndAliases = fixIndicesAndAliases(indexNameWithUnderscoreAndDateFormatted);
+        log.info("Fixed indices and aliases: {} when adding new index: {}",
+                fixIndicesAndAliases,
+                indexNameWithUnderscoreAndDateFormatted
+        );
 
         processBulkInsertData(typeaheadsBulkInsertDataFile);
+    }
+
+    private boolean fixIndicesAndAliases(String indexNameWithUnderscoreAndDateFormatted) {
+        try {
+            GetIndexRequest getIndexRequest = new GetIndexRequest("*");
+            GetIndexResponse response  = esClient.indices().get(getIndexRequest, RequestOptions.DEFAULT);
+
+            List<String> indices = Arrays.asList(response.getIndices());
+
+            String indexNamePrefixPlusUnderscore = indexName + "_";
+
+            List<String> filteredIndices =
+                    indices
+                            .stream()
+                            .filter(index -> {
+                                if (!index.startsWith(indexNamePrefixPlusUnderscore)) {
+                                    return false;
+                                }
+                                try {
+                                    LocalDateTime.parse(
+                                            index.substring(indexNamePrefixPlusUnderscore.length()),
+                                            TypeaheadRepository.formatter
+                                    );
+                                    return true;
+                                } catch (DateTimeParseException e) {
+                                    return false;
+                                }
+                            })
+                            .sorted(Collections.reverseOrder())
+                            .toList();
+
+            List<String> indicesToRemove =
+                    filteredIndices
+                            .stream()
+                            .skip(5)
+                            .toList();
+
+            IndicesAliasesRequest indicesAliasesRequest = new IndicesAliasesRequest();
+
+            IndicesAliasesRequest.AliasActions aliasActionAdd =
+                    IndicesAliasesRequest.AliasActions
+                            .add()
+                            .index(indexNameWithUnderscoreAndDateFormatted)
+                            .alias(indexName);
+            indicesAliasesRequest.addAliasAction(aliasActionAdd);
+
+            for (String indexToRemove : indicesToRemove) {
+                IndicesAliasesRequest.AliasActions aliasActionRemoveIndex =
+                        IndicesAliasesRequest.AliasActions
+                                .removeIndex()
+                                .index(indexToRemove);
+                indicesAliasesRequest.addAliasAction(aliasActionRemoveIndex);
+            }
+
+            if (filteredIndices.size() > 1) {
+                String indexNameForAliasRemoval = filteredIndices.get(1);
+                IndicesAliasesRequest.AliasActions removeAlias =
+                        IndicesAliasesRequest.AliasActions
+                                .remove()
+                                .alias(indexName)
+                                .index(indexNameForAliasRemoval);
+                indicesAliasesRequest.addAliasAction(removeAlias);
+
+            }
+            AcknowledgedResponse acknowledgedResponse =
+                    esClient
+                            .indices()
+                            .updateAliases(indicesAliasesRequest, RequestOptions.DEFAULT);
+
+            return acknowledgedResponse.isAcknowledged();
+
+        } catch (Exception e) {
+            log.error("fixIndicesAndAliases error ", e);
+            return false;
+        }
     }
 
     private boolean indexExists(String indexName) {

@@ -24,7 +24,8 @@ public class ExercisesIntegrationTest extends BaseTest {
     @Before
     public void init() throws InterruptedException {
         typeaheadService.recreateIndex();
-        Thread.sleep(500); // TASK 6: Why if we change 1100 to 500, then some tests fail? How to fix it, so that all tests pass with 500?
+//        Thread.sleep(500); // TASK 6: Why if we change 1100 to 500, then some tests fail? How to fix it, so that all tests pass with 500?
+        Thread.sleep(1100); // TASK 7: back to 1100ms > 1s, clash with index name
     }
 
     // TASK 1: Fix 2 bugs in config and recreation/filling of the index.
