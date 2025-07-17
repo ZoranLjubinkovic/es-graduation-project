@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <description>ES Graduation Project</description>
+    <parent>
+        <groupId>com.griddynamics</groupId>
+        <artifactId>es-graduation-project-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <groupId>com.griddynamics</groupId>
+    <artifactId>es-graduation-project</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>ESGraduationProject</name>
+
+    <dependencies>
+        <!--SPRING -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>2.5.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.5.7</version>
+
+        </dependency>
+
+        <!--ELASTIC -->
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>${elastic.transport.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elastic.transport.client.version}</version>
+        </dependency>
+
+        <!--OTHER -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <!--TEST -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <version>2.5.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${io-rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured-common</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>xml-path</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--        Fix error -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.8</version>
+        </dependency>
+
+    </dependencies>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version> <!-- Or the latest version -->
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include> <!-- Example include pattern -->
+                    </includes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+
+    <!--    <dependencies>-->
+<!--        &lt;!&ndash;SPRING &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-web</artifactId>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash;ELASTIC &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.elasticsearch.client</groupId>-->
+<!--            <artifactId>elasticsearch-rest-high-level-client</artifactId>-->
+<!--            <version>${elastic.transport.client.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.elasticsearch</groupId>-->
+<!--            <artifactId>elasticsearch</artifactId>-->
+<!--            <version>${elastic.transport.client.version}</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash;OTHER &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--            <artifactId>jackson-databind</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-lang3</artifactId>-->
+<!--            <version>${commons.lang.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.google.guava</groupId>-->
+<!--            <artifactId>guava</artifactId>-->
+<!--            <version>18.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <version>${lombok.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-test</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--            <version>2.5.7</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.rest-assured</groupId>-->
+<!--            <artifactId>rest-assured</artifactId>-->
+<!--            <version>${io-rest-assured.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;Added required depeendencies due to : https://github.com/rest-assured/rest-assured/issues/1168 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>io.rest-assured</groupId>-->
+<!--            <artifactId>rest-assured-common</artifactId>-->
+<!--            <version>${io-rest-assured.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.rest-assured</groupId>-->
+<!--            <artifactId>json-path</artifactId>-->
+<!--            <version>${io-rest-assured.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.rest-assured</groupId>-->
+<!--            <artifactId>xml-path</artifactId>-->
+<!--            <version>${io-rest-assured.version}</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;TEST &ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>org.springframework.boot</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>spring-boot-starter-test</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <scope>test</scope>&ndash;&gt;-->
+<!--        &lt;!&ndash;&lt;!&ndash;            <exclusions>&ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;&lt;!&ndash;                <exclusion>&ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;&lt;!&ndash;                    <groupId>org.junit.vintage</groupId>&ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;&lt;!&ndash;                    <artifactId>junit-vintage-engine</artifactId>&ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;&lt;!&ndash;                </exclusion>&ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;&lt;!&ndash;            </exclusions>&ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>io.rest-assured</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>rest-assured</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>${io-rest-assured.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <scope>test</scope>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;        &lt;!&ndash;Added required depeendencies due to : https://github.com/rest-assured/rest-assured/issues/1168 &ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>io.rest-assured</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>rest-assured-common</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>${io-rest-assured.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>io.rest-assured</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>json-path</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>${io-rest-assured.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>io.rest-assured</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>xml-path</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>${io-rest-assured.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;&lt;!&ndash; Added &ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>junit</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>junit</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>4.12</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <scope>test</scope>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>org.junit.vintage</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>junit-vintage-engine</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>5.7.0</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <scope>test</scope>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;        Fix error &ndash;&gt;-->
+<!--        &lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <groupId>org.codehaus.groovy</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <artifactId>groovy</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <version>3.0.8</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </dependency>&ndash;&gt;-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter</artifactId>-->
+<!--            <version>5.7.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.junit.vintage</groupId>-->
+<!--            <artifactId>junit-vintage-engine</artifactId>-->
+<!--            <version>5.7.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+<!--    </dependencies>-->
+
+    <!--    <dependencies>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.junit.jupiter</groupId>-->
+    <!--            <artifactId>junit-jupiter</artifactId>-->
+    <!--            <version>5.7.2</version>-->
+    <!--            <scope>test</scope>-->
+    <!--        </dependency>-->
+
+    <!--        <dependency>-->
+    <!--            <groupId>org.junit.vintage</groupId>-->
+    <!--            <artifactId>junit-vintage-engine</artifactId>-->
+    <!--            <version>5.7.0</version>-->
+    <!--            <scope>test</scope>-->
+    <!--        </dependency>-->
+    <!--    </dependencies>-->
+
+</project>

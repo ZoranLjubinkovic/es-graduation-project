@@ -37,3 +37,15 @@ or
 ```shell
   mvn spring-boot:run -Dspring-boot.run.arguments="recreateIndex"
 ```
+## Maven multi module project:
+> es-graduation-project-parent
+> 
+    - es-graduation-project
+    - product-indexer
+    - product-search-service
+    - integration-tests
+
+### Run all tests
+```shell
+  mvn clean test
+```

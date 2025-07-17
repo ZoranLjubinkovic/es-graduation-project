@@ -1,0 +1,35 @@
+{
+  "index": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "similarity": {
+      "default": {
+        "type": "boolean"
+      }
+    }
+  },
+  "analysis": {
+    "analyzer": {
+      "text_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ]
+      },
+      "shingles_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": ["lowercase", "shingles_filter"]
+      }
+    },
+    "filter": {
+      "shingles_filter": {
+        "type": "shingle",
+        "min_shingle_size": 2,
+        "max_shingle_size": 4
+      }
+    }
+  }
+}

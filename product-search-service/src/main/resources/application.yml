@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: product-search-service
+server:
+  port: 8082
+
+com:
+  griddynamics:
+    product:
+      search:
+        service:
+          esHost: http://localhost:9200
+          user:
+          pass:
+          alias: product_index
+          request:
+            default:
+              findByQuerySize: 10
+              pageSize: 0

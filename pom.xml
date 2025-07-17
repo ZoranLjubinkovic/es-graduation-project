@@ -5,22 +5,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.griddynamics</groupId>
-    <artifactId>es-graduation-project</artifactId>
+    <artifactId>es-graduation-project-parent</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <name>ESGraduationProject</name>
-    <description>ES Graduation Project</description>
+    <name>ESGraduationProject parent</name>
+    <description>ES Graduation Project parent</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-<!--        <version>2.1.6.RELEASE</version> -->
-<!--        Updated SB for Java 17           -->
+        <!--        <version>2.1.6.RELEASE</version> -->
+        <!--        Updated SB for Java 17           -->
         <version>2.5.7</version>
     </parent>
 
+    <modules>
+        <module>es-graduation-project</module>
+        <module>product-indexer</module>
+        <module>product-search-service</module>
+        <module>integration-tests</module>
+    </modules>
+
     <properties>
-<!--        Java 17    -->
+        <!--        Java 17    -->
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
 
@@ -29,11 +36,12 @@
         <!--<logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>-->
         <commons.lang.version>3.7</commons.lang.version>
         <!--<commons.collections4.version>4.2</commons.collections4.version>-->
-<!--        Updated from 1.18.4 -->
+        <!--        Updated from 1.18.4 -->
         <lombok.version>1.18.38</lombok.version>
 
         <io-rest-assured.version>4.0.0</io-rest-assured.version>
     </properties>
+
 
     <dependencies>
         <!--SPRING -->
@@ -75,86 +83,73 @@
             <version>${lombok.version}</version>
         </dependency>
 
-        <!--TEST -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>${io-rest-assured.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!--Added required depeendencies due to : https://github.com/rest-assured/rest-assured/issues/1168 -->
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured-common</artifactId>
-            <version>${io-rest-assured.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>json-path</artifactId>
-            <version>${io-rest-assured.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>xml-path</artifactId>
-            <version>${io-rest-assured.version}</version>
-        </dependency>
-
-<!-- Added -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.7.0</version>
-            <scope>test</scope>
-        </dependency>
-
-<!--        Fix error -->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>3.0.8</version>
-        </dependency>
-
     </dependencies>
 
 
-
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version> <!-- Or the latest version -->
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include> <!-- Example include pattern -->
-                    </includes>
-                </configuration>
-            </plugin>
 
-        </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${io-rest-assured.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured-common</artifactId>
+                <version>${io-rest-assured.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${io-rest-assured.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>xml-path</artifactId>
+                <version>${io-rest-assured.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.7.2</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>5.7.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>3.0.8</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
 
 </project>

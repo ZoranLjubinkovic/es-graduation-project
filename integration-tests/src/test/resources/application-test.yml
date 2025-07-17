@@ -1,0 +1,21 @@
+com:
+  griddynamics:
+    product:
+      indexer:
+        esHost: http://localhost:9200
+        user:
+        pass:
+        index: test_products
+        alias: test_product_index
+        maxIndices: 3
+
+      search:
+        service:
+          esHost: http://localhost:9200
+          user:
+          pass:
+          alias: test_product_index
+          request:
+            default:
+              findByQuerySize: 10
+              pageSize: 0
