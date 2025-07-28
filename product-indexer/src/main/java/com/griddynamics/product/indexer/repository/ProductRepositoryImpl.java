@@ -188,63 +188,6 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-    private void updateIndicesAndAliases(String newIndexName) {
-
-        try {
-            // find all indices starting with indexName
-            GetIndexRequest request = new GetIndexRequest(indexName + "_*");
-            GetIndexResponse response = esClient.indices().get(request, RequestOptions.DEFAULT);
-
-            List<String> indexNames = Arrays.stream(response.getIndices())
-                    .filter(name -> name.matches(indexName + "_\\d{14}"))
-                    .collect(Collectors.toList());
-            log.debug("Found {} indices starting with '{}':", indexNames.size(), indexName);
-
-            List<String> indexNamesForAliasRemoval = new ArrayList<>();
-            List<String> indexNamesForDeletion = new ArrayList<>();
-            if(indexNames.size() > maxIndices) {
-                indexNamesForDeletion = indexNames
-                        .stream()
-                        .sorted(Collections.reverseOrder())
-                        .skip(maxIndices)
-                        .collect(Collectors.toList());
-            }
-            if(indexNames.size() > 1) {
-                indexNamesForAliasRemoval = indexNames
-                        .stream()
-                        .sorted(Collections.reverseOrder())
-                        .skip(1)
-                        .collect(Collectors.toList());
-            }
-
-            // create alias for the newly created index
-            IndicesAliasesRequest indicesAliasesRequest = new IndicesAliasesRequest();
-            IndicesAliasesRequest.AliasActions aliasActionAddNewAlias = new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD);
-            aliasActionAddNewAlias.alias(aliasName);
-            aliasActionAddNewAlias.index(newIndexName);
-            indicesAliasesRequest.addAliasAction(aliasActionAddNewAlias);
-
-            // remove old aliases
-            if(!indexNamesForAliasRemoval.isEmpty()) {
-                IndicesAliasesRequest.AliasActions aliasActionAliasRemovals = new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE);
-                aliasActionAliasRemovals.indices(indexNamesForAliasRemoval.toArray(new String[indexNamesForAliasRemoval.size()]));
-                aliasActionAliasRemovals.alias(aliasName);
-                indicesAliasesRequest.addAliasAction(aliasActionAliasRemovals);
-            }
-
-            // remove old indices
-            if(!indexNamesForDeletion.isEmpty()) {
-                IndicesAliasesRequest.AliasActions aliasActionIndexRemovals = new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE_INDEX);
-                aliasActionIndexRemovals.indices(indexNamesForDeletion.toArray(new String[indexNamesForDeletion.size()]));
-                indicesAliasesRequest.addAliasAction(aliasActionIndexRemovals);
-            }
-
-            esClient.indices().updateAliases(indicesAliasesRequest, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            throw new RuntimeException("An error occurred updating aliases", e);
-        }
-
-    }
 
     private void processBulkInsertData(Resource bulkInsertDataFile) {
         int requestCnt = 0;

@@ -6,7 +6,7 @@ com:
         user:
         pass:
         index: test_products
-        alias: test_product_index
+        alias: test_products
         maxIndices: 3
 
       search:
@@ -14,7 +14,7 @@ com:
           esHost: http://localhost:9200
           user:
           pass:
-          alias: test_product_index
+          alias: test_products
           request:
             default:
               findByQuerySize: 10
