@@ -82,25 +82,78 @@ public class ProductRepositoryImpl implements ProductRepository {
         processBulkInsertData(productsBulkInsertDataFile);
     }
 
-    private void fixIndicesAndAliases(String indexNameWithUnderscoreAndDateFormatted) {
+    private boolean fixIndicesAndAliases(String indexNameWithUnderscoreAndDateFormatted) {
         try {
-            ClusterUpdateSettingsRequest request = new ClusterUpdateSettingsRequest();
-            Settings persistentSettings = Settings.builder()
-                    .put("indices.id_field_data.enabled", true)
-                    .build();
+            GetIndexRequest getIndexRequest = new GetIndexRequest("*");
+            GetIndexResponse response  = esClient.indices().get(getIndexRequest, RequestOptions.DEFAULT);
 
-            request.persistentSettings(persistentSettings);
-            ClusterUpdateSettingsResponse clusterUpdateResponse = esClient.cluster()
-                    .putSettings(request, RequestOptions.DEFAULT);
+            List<String> indices = Arrays.asList(response.getIndices());
 
-            if (!clusterUpdateResponse.isAcknowledged()) {
-                throw new RuntimeException("Cluster settings update not acknowledged");
-            } else {
-                log.info("Cluster settings updated");
+            String indexNamePrefixPlusUnderscore = indexName + "_";
+
+            List<String> filteredIndices =
+                    indices
+                            .stream()
+                            .filter(index -> {
+                                if (!index.startsWith(indexNamePrefixPlusUnderscore)) {
+                                    return false;
+                                }
+                                try {
+                                    LocalDateTime.parse(
+                                            index.substring(indexNamePrefixPlusUnderscore.length()),
+                                            ProductRepository.formatter
+                                    );
+                                    return true;
+                                } catch (DateTimeParseException e) {
+                                    return false;
+                                }
+                            })
+                            .sorted(Collections.reverseOrder())
+                            .toList();
+
+            List<String> indicesToRemove =
+                    filteredIndices
+                            .stream()
+                            .skip(5)
+                            .toList();
+
+            IndicesAliasesRequest indicesAliasesRequest = new IndicesAliasesRequest();
+
+            IndicesAliasesRequest.AliasActions aliasActionAdd =
+                    IndicesAliasesRequest.AliasActions
+                            .add()
+                            .index(indexNameWithUnderscoreAndDateFormatted)
+                            .alias(indexName);
+            indicesAliasesRequest.addAliasAction(aliasActionAdd);
+
+            for (String indexToRemove : indicesToRemove) {
+                IndicesAliasesRequest.AliasActions aliasActionRemoveIndex =
+                        IndicesAliasesRequest.AliasActions
+                                .removeIndex()
+                                .index(indexToRemove);
+                indicesAliasesRequest.addAliasAction(aliasActionRemoveIndex);
             }
 
-        } catch (IOException ex) {
-            throw new RuntimeException("An error occurred during updating cluster settings", ex);
+            if (filteredIndices.size() > 1) {
+                String indexNameForAliasRemoval = filteredIndices.get(1);
+                IndicesAliasesRequest.AliasActions removeAlias =
+                        IndicesAliasesRequest.AliasActions
+                                .remove()
+                                .alias(indexName)
+                                .index(indexNameForAliasRemoval);
+                indicesAliasesRequest.addAliasAction(removeAlias);
+
+            }
+            AcknowledgedResponse acknowledgedResponse =
+                    esClient
+                            .indices()
+                            .updateAliases(indicesAliasesRequest, RequestOptions.DEFAULT);
+
+            return acknowledgedResponse.isAcknowledged();
+
+        } catch (Exception e) {
+            log.error("fixIndicesAndAliases error ", e);
+            return false;
         }
     }
 
